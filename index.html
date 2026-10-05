@@ -500,7 +500,7 @@ footer b{color:rgba(255,255,255,.85)}
               <div id="friendList"></div>
               <input type="hidden" id="friends" name="friends">
               <p class="hint">본인 정보는 아래 ②에 적고, 여기엔 친구 정보만 적어주세요.</p>
-              <p class="err">친구 이름·나이·학교·카톡·인스타를 모두 적어주세요 (인스타 없으면 '없음')</p>
+              <p class="err">친구 이름·나이·학교·카톡·인스타를 모두 적어주세요</p>
             </div>
           </fieldset>
 
@@ -586,8 +586,8 @@ footer b{color:rgba(255,255,255,.85)}
               </div>
               <div class="field" data-f="instagram">
                 <label class="l" for="instagram">인스타 ID <i>*</i></label>
-                <input type="text" id="instagram" name="instagram" maxlength="30" autocapitalize="off" placeholder="없으면 '없음'">
-                <p class="err">없으면 '없음'</p>
+                <input type="text" id="instagram" name="instagram" maxlength="30" autocapitalize="off" placeholder="예: runway_26">
+                <p class="err">인스타 ID를 적어주세요</p>
               </div>
             </div>
           </fieldset>
@@ -773,7 +773,7 @@ function saveDraft() {
 })();
 
 // ===== 미팅 친구 정보 =====
-const FR_FIELDS = [['n', '이름', '예: 김민지', true], ['a', '나이', '예: 22', true], ['s', '학교', '예: 한양대', true], ['m', '학과', '선택', false], ['k', '카톡 ID', '친구 카톡 ID', true], ['i', '인스타 ID', "없으면 '없음'", true]];
+const FR_FIELDS = [['n', '이름', '예: 김민지', true], ['a', '나이', '예: 22', true], ['s', '학교', '예: 한양대', true], ['m', '학과', '선택', false], ['k', '카톡 ID', '친구 카톡 ID', true], ['i', '인스타 ID', '친구 인스타 ID', true]];
 function friendCount() { const ev = val('event_type'); return ev.includes('3대3') ? 2 : ev.includes('2대2') ? 1 : 0; }
 function renderFriends() {
   const n = friendCount(), list = $('#friendList');
@@ -811,7 +811,8 @@ function friendsMissing() {
   let miss = false;
   $('#friendList').querySelectorAll('.fr').forEach(fr => FR_FIELDS.forEach(([k, , , req]) => {
     const inp = fr.querySelector('[data-k="' + k + '"]');
-    const bad = req && !inp.value.trim();
+    const v = inp.value.trim();
+    const bad = req && (!v || (k === 'i' && NO_IG.test(v)));
     inp.classList.toggle('miss', bad);
     if (bad) miss = true;
   }));
@@ -831,6 +832,8 @@ form.addEventListener('change', e => {
   renderFriends(); updatePay(); saveDraft();
 });
 
+// 인스타는 필수 — '없음' 같은 값은 안 받음
+const NO_IG = /^@?\s*(없음|없어요|없습니다|x|X|-|no|none|ㄴ|ㄴㄴ)\s*$/i;
 const REQUIRED = ['event_type', 'gender', 'name', 'age', 'track', 'school', 'major', 'avoid', 'mbti', 'ideal', 'phone', 'kakao', 'instagram', 'refund'];
 function validate() {
   let first = null;
@@ -841,6 +844,7 @@ function validate() {
   if (val('age') && (!age || age < 19 || age > 45)) bad('age');
   const phone = val('phone').replace(/[^0-9]/g, '');
   if (val('phone') && !/^01[016789][0-9]{7,8}$/.test(phone)) bad('phone');
+  if (val('instagram') && NO_IG.test(val('instagram'))) bad('instagram');
   if (friendCount() && friendsMissing()) bad('friends');
   if (!$('#agree').checked || !$('#agree2').checked) bad('agree');
   if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
