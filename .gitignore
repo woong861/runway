@@ -1,0 +1,5 @@
+gas/
+*.gs
+.DS_Store
+promo/
+.clasp.json

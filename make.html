@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>런웨이 운영진 — 매칭</title>
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='80' font-size='80'%3E%F0%9F%9B%A0%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#16130f;--blue2:#c2391a;--sky:#f3efe8;--pink:#ff5a36;--pinks:#fff1ea;--bg:#f7f4ef;--card:#fff;--line:#dde5ef;--ink:#10213a;--muted:#667389;--ok:#1f9d63;--err:#d93d4a}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:'Noto Sans KR',sans-serif;background:var(--bg);color:var(--ink);padding:16px 18px 80px;font-size:13px}
+.container{max-width:1400px;margin:0 auto}
+h1{font-size:21px;color:var(--blue);font-weight:900}
+.header{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:12px}
+.meta{color:var(--muted);font-size:12px}
+.warn{background:#fff6d6;border:1px solid #f1dc8c;border-radius:10px;padding:10px 12px;font-size:12px;line-height:1.6;margin-bottom:12px}
+.config{display:flex;gap:8px;align-items:center;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin-bottom:14px}
+.config label{font-weight:700;font-size:12px}
+.config input{flex:1;min-width:200px;padding:7px 9px;border:1px solid var(--line);border-radius:6px;font-size:12px;font-family:monospace}
+.layout{display:grid;grid-template-columns:1.15fr 1fr;gap:14px;align-items:start}
+@media(max-width:900px){.layout{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px}
+.ptitle{font-weight:900;font-size:15px;margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;gap:8px}
+.toolbar{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.toolbar input{flex:1 1 180px;padding:7px 10px;border:1px solid var(--line);border-radius:8px;font-size:12.5px}
+.chip{border:1px solid var(--line);background:#fff;border-radius:99px;padding:5px 10px;font-size:12px}
+.chip.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.list{max-height:72vh;overflow:auto;display:flex;flex-direction:column;gap:6px}
+.empty{padding:30px;text-align:center;color:var(--muted)}
+.ap{display:grid;grid-template-columns:34px 1fr auto;gap:8px;border:1px solid var(--line);border-radius:10px;padding:9px 10px;background:#fff}
+.ap.matched{opacity:.45}
+.ap.sa{border-color:var(--pink);background:var(--pinks)}
+.ap.sb{border-color:var(--blue2);background:var(--sky)}
+.ap .idx{color:var(--muted);font-size:11px}
+.nm{font-weight:900;font-size:14px}
+.g{display:inline-block;font-size:10.5px;font-weight:900;border-radius:5px;padding:1px 5px;margin-left:5px;vertical-align:2px}
+.g.m{background:#dbe9ff;color:#1b4fa0}.g.f{background:#ffe0ea;color:#b52a5a}
+.st{display:inline-block;font-size:10.5px;background:#e3f6ea;color:var(--ok);border-radius:5px;padding:1px 6px;margin-left:5px}
+.sub{color:var(--muted);font-size:12px;margin-top:2px}
+.avoid{font-size:11.5px;color:#b3541e;margin-top:2px}
+.intro{font-size:12px;color:#333;margin-top:3px}
+.btns{display:flex;flex-direction:column;gap:4px}
+.btn{border:0;border-radius:8px;padding:8px 12px;font-weight:700;font-size:12.5px;font-family:inherit;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.b-sec{background:#eef2f7;color:var(--ink)}
+.b-pri{background:var(--blue);color:#fff}
+.b-ok{background:var(--ok);color:#fff}
+.b-pink{background:var(--pink);color:#fff}
+.mini{border:1px solid var(--line);background:#fff;border-radius:6px;padding:3px 8px;font-size:11.5px;cursor:pointer;font-family:inherit}
+.slot{border:2px dashed var(--line);border-radius:12px;padding:12px;margin-bottom:10px;position:relative;min-height:70px}
+.slot.fa{border-style:solid;border-color:var(--pink);background:var(--pinks)}
+.slot.fb{border-style:solid;border-color:var(--blue2);background:var(--sky)}
+.slot .lb{font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.slot .x{position:absolute;right:8px;top:6px;border:0;background:none;font-size:18px;cursor:pointer;color:var(--muted)}
+.check{font-size:12px;border-radius:8px;padding:8px 10px;margin-bottom:10px;line-height:1.6}
+.check.okc{background:#e3f6ea;color:#145c3b}.check.bad{background:#fde8ea;color:#8c1d2a}
+.actions{display:flex;gap:6px;flex-wrap:wrap}
+textarea{width:100%;min-height:52px;padding:8px 10px;font-size:12px;border:1px solid var(--line);border-radius:8px;font-family:inherit;margin:4px 0 10px}
+.res{margin-top:12px;border-top:1px solid var(--line);padding-top:12px}
+.res.hidden{display:none}
+.rr{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+.rr input{flex:1;padding:6px 8px;font-size:11px;border:1px solid var(--line);border-radius:6px;font-family:monospace}
+.sms{white-space:pre-wrap;background:#f7f9fc;border:1px solid var(--line);border-radius:8px;padding:10px;font-size:11.5px;max-height:220px;overflow:auto;margin-top:6px}
+.status{margin-top:8px;font-size:12px}
+.status.ok{color:var(--ok)}.status.err{color:var(--err)}
+.sugg{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.sg{border:1px solid var(--line);border-radius:10px;padding:9px 10px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center}
+.sg .pair{font-weight:900;font-size:13.5px}
+.sg .why{font-size:11.5px;color:var(--muted);margin-top:2px}
+.score{font-size:11px;font-weight:900;background:var(--sky);color:var(--blue);border-radius:5px;padding:1px 6px;margin-left:6px}
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>✈️ 런웨이 운영진 — 매칭</h1>
+    <div class="meta"><span id="loadedCount">0명</span> · <span id="lastRefresh">로딩 안 함</span></div>
+  </div>
+
+  <div class="warn">
+    ⚠️ <b>운영진 전용.</b> 신청자에게 공유 금지. SMS는 누르는 즉시 실제 발송돼요.<br>
+    ℹ️ 사이트 신청서는 운영 시트 '신청자' 탭에 바로 쌓여요. 매칭상태·발송로그도 그 시트에 기록돼요.<br>
+    💸 <b>입금·사진 확인은 오픈채팅에서</b> 직접 확인 후 매칭하세요 (각 신청자 입금정보는 목록에 표시).
+  </div>
+
+  <div class="config">
+    <label>Apps Script URL</label>
+    <input type="text" id="apiUrl" value="https://script.google.com/macros/s/AKfycbzhGTi1gsNO0jpekAPGn0mb3g0-Lgm1neqblWbRlxr8j9MUrb5TeqKNPkrLEtLiM3rMxg/exec">
+    <label>사이트 주소</label>
+    <input type="text" id="baseUrl" value="https://runwayting.cloud" style="max-width:280px">
+    <label>운영진 키</label>
+    <input type="password" id="adminKey" style="max-width:200px" placeholder="처음 한 번만 입력" autocomplete="off">
+    <button class="btn b-sec" onclick="loadApplicants()">🔄 신청자 새로고침</button>
+  </div>
+
+  <div class="layout">
+    <div class="panel">
+      <div class="ptitle"><span>📋 신청자</span><span class="meta" id="filteredCount"></span></div>
+      <div class="toolbar">
+        <input type="text" id="q" placeholder="이름·학교·학과·계열·MBTI·인스타 검색" oninput="renderList()">
+        <button class="chip on" data-k="gender" data-v="all">전체</button>
+        <button class="chip" data-k="gender" data-v="남자">남</button>
+        <button class="chip" data-k="gender" data-v="여자">여</button>
+        <button class="chip on" data-k="event" data-v="all">모든 유형</button>
+        <button class="chip" data-k="event" data-v="소개팅">소개팅</button>
+        <button class="chip" data-k="event" data-v="2대2">2:2</button>
+        <button class="chip" data-k="event" data-v="3대3">3:3</button>
+        <button class="chip on" data-k="hide" data-v="1">매칭완료 숨김</button>
+      </div>
+      <div class="list" id="list"><div class="empty">"신청자 새로고침"을 눌러주세요</div></div>
+    </div>
+
+    <div>
+      <div class="panel" style="margin-bottom:14px">
+        <div class="ptitle"><span>🤖 자동 추천 페어</span><button class="btn b-pri" onclick="suggest()">추천 돌리기</button></div>
+        <div class="meta" style="line-height:1.6">
+          매칭 안 된 <b>소개팅</b> 신청자끼리 남녀 쌍을 자동으로 추천해요.<br>
+          제외: 피하고 싶은 학교/학과에 걸림 · 같은 과/같은 학교 X · 나이 차 5살 초과<br>
+          점수: 나이 차 · MBTI 궁합 · 이상형에 상대 MBTI/학교/계열 언급 · 먼저 신청한 사람 우선
+        </div>
+        <div class="sugg" id="sugg"></div>
+      </div>
+
+      <div class="panel">
+        <div class="ptitle">🎯 1:1 매칭</div>
+        <div class="slot" id="slotA"><button class="x" onclick="clearSlot('a')" hidden>×</button><div class="lb">🌸 A</div><div class="sc"><span class="meta">왼쪽에서 'A로'</span></div></div>
+        <div class="slot" id="slotB"><button class="x" onclick="clearSlot('b')" hidden>×</button><div class="lb">💙 B</div><div class="sc"><span class="meta">왼쪽에서 'B로'</span></div></div>
+        <div id="pairCheck"></div>
+        <label style="font-size:12px;font-weight:700">💌 운영진 한마디 (선택 — 양쪽 결과 페이지에 표시)</label>
+        <textarea id="comment" maxlength="120" placeholder="예: 두 분 다 전시회 좋아하셔서 대화가 잘 통할 것 같아요!"></textarea>
+        <div class="actions">
+          <button class="btn b-sec" onclick="swap()">🔁 교환</button>
+          <button class="btn b-sec" onclick="clearAll()">🗑 비우기</button>
+          <button class="btn b-pri" id="genBtn" onclick="generate()" disabled>🔗 결과 링크 만들기</button>
+        </div>
+        <div class="res hidden" id="res">
+          <div class="rr"><b>A→</b><input id="urlA" readonly><button class="mini" onclick="copyVal('urlA',this)">복사</button></div>
+          <div class="rr"><b>B→</b><input id="urlB" readonly><button class="mini" onclick="copyVal('urlB',this)">복사</button></div>
+          <div class="meta" style="font-weight:700;margin-top:6px">📱 문자 미리보기 (LMS, 양쪽 동시)</div>
+          <div class="sms" id="smsPreview"></div>
+          <div class="actions" style="margin-top:10px"><button class="btn b-ok" id="sendBtn" onclick="sendSms()">📱 양쪽에 문자 발송</button></div>
+          <div class="status" id="sendStatus"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let APPLICANTS = [];
+let slotA = null, slotB = null;
+const F = { gender: 'all', event: 'all', hide: true };
+
+document.querySelectorAll('.chip').forEach(c => c.addEventListener('click', () => {
+  const k = c.dataset.k;
+  if (k === 'hide') { F.hide = !F.hide; c.classList.toggle('on', F.hide); }
+  else {
+    document.querySelectorAll('.chip[data-k="' + k + '"]').forEach(x => x.classList.remove('on'));
+    c.classList.add('on'); F[k] = c.dataset.v;
+  }
+  renderList();
+}));
+
+function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+
+async function apiFetch(url, { timeout = 40000, retries = 2, onRetry } = {}) {
+  let last;
+  for (let i = 0; i <= retries; i++) {
+    if (i > 0 && onRetry) onRetry(i, retries);
+    const ctrl = new AbortController(); const t = setTimeout(() => ctrl.abort(), timeout);
+    try {
+      const r = await fetch(url, { cache: 'no-store', signal: ctrl.signal }); clearTimeout(t);
+      if (!r.ok) throw new Error('서버 응답 ' + r.status);
+      const txt = await r.text();
+      try { return JSON.parse(txt); } catch (e) { throw new Error('응답 형식 오류 — Apps Script 권한 승인/배포 확인'); }
+    } catch (e) {
+      clearTimeout(t);
+      last = e.name === 'AbortError' ? new Error('응답 시간 초과') : e;
+      if (i < retries) await new Promise(r => setTimeout(r, 1500));
+    }
+  }
+  throw last;
+}
+
+async function loadApplicants() {
+  const url = document.getElementById('apiUrl').value.trim();
+  const list = document.getElementById('list');
+  list.innerHTML = '<div class="empty">⏳ 불러오는 중… (처음엔 30초까지 걸려요)</div>';
+  try {
+    const key = document.getElementById('adminKey').value.trim();
+    if (!key) throw new Error('운영진 키를 입력하세요');
+    try { localStorage.setItem('rw_admin_key', key); } catch (e) { }
+    const d = await apiFetch(url + '?action=rwList&key=' + encodeURIComponent(key) + '&t=' + Date.now(), {
+      onRetry: (n, t) => { list.innerHTML = '<div class="empty">⏳ 재시도 ' + n + '/' + t + '</div>'; }
+    });
+    if (d.error) throw new Error(d.error);
+    APPLICANTS = d.applicants || [];
+    document.getElementById('loadedCount').textContent = APPLICANTS.length + '명';
+    document.getElementById('lastRefresh').textContent = '갱신 ' + new Date().toLocaleTimeString('ko-KR');
+    // 슬롯 최신화
+    if (slotA) slotA = APPLICANTS.find(x => x.row === slotA.row) || null;
+    if (slotB) slotB = APPLICANTS.find(x => x.row === slotB.row) || null;
+    renderList(); renderSlots();
+  } catch (e) {
+    list.innerHTML = '<div class="empty" style="color:var(--err)">❌ ' + esc(e.message) + '<br><button class="btn b-sec" style="margin-top:8px" onclick="loadApplicants()">다시 시도</button></div>';
+  }
+}
+
+function isMatched(a) { return /매칭|완료|done/i.test(a.status || ''); }
+function evKind(a) { const e = a.eventType || ''; return e.includes('3대3') ? '3:3' : e.includes('2대2') ? '2:2' : e.includes('소개팅') ? '소개팅' : e; }
+
+function renderList() {
+  const q = document.getElementById('q').value.trim().toLowerCase();
+  const rows = APPLICANTS.filter(a => {
+    if (F.gender !== 'all' && a.gender !== F.gender) return false;
+    if (F.event !== 'all' && (a.eventType || '').indexOf(F.event) === -1) return false;
+    if (F.hide && isMatched(a)) return false;
+    if (q && ![a.name, a.school, a.major, a.track, a.mbti, a.instagram, a.kakao, a.intro, a.friends].join(' ').toLowerCase().includes(q)) return false;
+    return true;
+  });
+  document.getElementById('filteredCount').textContent = rows.length + ' / ' + APPLICANTS.length + '명';
+  const list = document.getElementById('list');
+  if (!rows.length) { list.innerHTML = '<div class="empty">조건에 맞는 신청자가 없어요</div>'; return; }
+  list.innerHTML = rows.map(a => {
+    const cls = ['ap', isMatched(a) ? 'matched' : '', slotA && slotA.row === a.row ? 'sa' : '', slotB && slotB.row === a.row ? 'sb' : ''].join(' ');
+    const g = a.gender === '남자' ? '<span class="g m">남</span>' : a.gender === '여자' ? '<span class="g f">여</span>' : '';
+    const st = isMatched(a) ? '<span class="st">' + esc(a.status) + '</span>' : '';
+    const sub = [a.track && '[' + a.track + ']', a.school, a.major, a.age && a.age + '살', a.mbti, evKind(a)].filter(Boolean).join(' · ');
+    const contact = [a.phone, a.kakao && '카톡 ' + a.kakao, a.instagram && '@' + a.instagram].filter(Boolean).join(' · ');
+    const avoid = a.avoid && !/^(없음|없어요|x|X|-|무관|상관없음)$/.test(a.avoid) ? '<div class="avoid">🚫 ' + esc(a.avoid) + '</div>' : '';
+    return '<div class="' + cls + '"><div class="idx">#' + a.row + '</div><div>' +
+      '<div class="nm">' + esc(a.name) + g + st + '</div>' +
+      '<div class="sub">' + esc(sub) + '</div><div class="sub">' + esc(contact) + '</div>' +
+      '<div class="sub">💸 ' + esc(a.payment || '-') + '</div>' + avoid +
+      (a.friends ? '<div class="sub" style="color:#1b64b5">👯 ' + esc(a.friends) + '</div>' : '') +
+      (a.intro ? '<div class="intro">"' + esc(a.intro) + '"</div>' : '') +
+      (a.ideal ? '<div class="sub">💘 ' + esc(a.ideal) + '</div>' : '') +
+      '</div><div class="btns"><button class="btn b-sec" onclick="setSlot(\'a\',' + a.row + ')">A로</button><button class="btn b-sec" onclick="setSlot(\'b\',' + a.row + ')">B로</button></div></div>';
+  }).join('');
+}
+
+// ============ 자동 추천 ============
+const NO_AVOID = /^(없음|없어요|없습니다|x|X|-|무관|상관\s*없(음|어요)|노상관)$/;
+function normSchool(s) {
+  s = String(s || '').replace(/\s/g, '').replace(/\(.*?\)/g, '');
+  return s.replace(/대학교$/, '대').replace(/학교$/, '');
+}
+function majorName(m) { return String(m || '').split(/[\/|,]/)[0].replace(/\s/g, ''); }
+function gradeOf(m) { const x = String(m || '').match(/([1-6])\s*학년/); return x ? Number(x[1]) : null; }
+function avoidHit(from, to) {
+  const t = String(from.avoid || '').trim();
+  if (!t || NO_AVOID.test(t)) return null;
+  const mj = majorName(to.major);
+  if (/같은\s*학교/.test(t) && normSchool(from.school) === normSchool(to.school)) return '같은 학교 피함';
+  if (/같은\s*(과|학과|전공)/.test(t) && mj && majorName(from.major) === mj && normSchool(from.school) === normSchool(to.school)) return '같은 과 피함';
+  const tokens = t.split(/[,\/·\s]+/).map(x => x.replace(/(X|x|싫어요|싫음|제외|빼주세요|노)$/g, '').trim()).filter(x => x.length >= 2 && !/^(같은|학과|학년|이상|이하|없음)$/.test(x));
+  for (const tk of tokens) {
+    const core = tk.replace(/(학과|학부|과)$/, '');
+    if (core.length >= 2 && mj.includes(core)) return '🚫 "' + tk + '"';
+    if (/대$/.test(tk) && normSchool(to.school) === normSchool(tk)) return '🚫 학교 "' + tk + '"';
+  }
+  const g = gradeOf(to.major);
+  const gm = t.match(/([1-6])\s*학년/);
+  if (g && gm && Number(gm[1]) === g) return '🚫 ' + g + '학년';
+  return null;
+}
+function mbtiScore(a, b) {
+  const x = (a.mbti || '').match(/^[EI][NS][TF][JP]$/) && a.mbti, y = (b.mbti || '').match(/^[EI][NS][TF][JP]$/) && b.mbti;
+  if (!x || !y) return 0;
+  let s = 0;
+  if (x[1] === y[1]) s += 2;      // N/S 같음 → 대화 결
+  if (x[0] !== y[0]) s += 1;      // E/I 보완
+  if (x[3] !== y[3]) s += 0.5;
+  return s;
+}
+function pairEval(m, f) {
+  const why = [];
+  if (evKind(m) !== evKind(f)) return null;
+  const hit = avoidHit(m, f) || avoidHit(f, m);
+  if (hit) return null;
+  const am = Number(m.age) || 0, af = Number(f.age) || 0;
+  let score = 10;
+  if (am && af) {
+    const d = Math.abs(am - af);
+    if (d > 5) return null;
+    score -= d * 1.2;
+    why.push(d === 0 ? '동갑' : '나이차 ' + d);
+  }
+  const mb = mbtiScore(m, f); if (mb) { score += mb; why.push('MBTI +' + mb); }
+  const idealHit = (p, q) => (p.ideal || '').toUpperCase().includes(q.mbti || '§') || (q.track && q.track !== '일반학과' && (p.ideal || '').includes(q.track.split('·')[0])) || (q.school && (p.ideal || '').includes(normSchool(q.school)));
+  if (idealHit(m, f)) { score += 3; why.push('남 이상형 언급'); }
+  if (idealHit(f, m)) { score += 3; why.push('여 이상형 언급'); }
+  if (normSchool(m.school) === normSchool(f.school)) why.push('같은 학교');
+  return { score: Math.round(score * 10) / 10, why };
+}
+let SUGG = [];
+function suggest() {
+  const pool = APPLICANTS.filter(a => !isMatched(a) && evKind(a) === '소개팅');
+  const men = pool.filter(a => a.gender === '남자'), women = pool.filter(a => a.gender === '여자');
+  const order = a => new Date(a.ts).getTime() || a.row;
+  const pairs = [];
+  men.forEach(m => women.forEach(f => {
+    const e = pairEval(m, f);
+    if (e) pairs.push({ m, f, score: e.score + 0.000001 * (1e13 - Math.min(order(m), order(f))) / 1e7, shown: e.score, why: e.why });
+  }));
+  pairs.sort((a, b) => b.score - a.score);
+  const used = new Set(); SUGG = [];
+  pairs.forEach(p => { if (used.has(p.m.row) || used.has(p.f.row)) return; used.add(p.m.row); used.add(p.f.row); SUGG.push(p); });
+  const el = document.getElementById('sugg');
+  if (!APPLICANTS.length) { el.innerHTML = '<div class="empty">먼저 신청자를 불러오세요</div>'; return; }
+  const left = pool.length - SUGG.length * 2;
+  el.innerHTML = (SUGG.length ? '' : '<div class="empty">조건에 맞는 페어가 없어요</div>') + SUGG.map((p, i) =>
+    '<div class="sg"><div><div class="pair">' + esc(p.m.name) + ' <span class="meta">' + esc(normSchool(p.m.school) + ' ' + p.m.age + ' ' + p.m.mbti) + '</span> ↔ ' + esc(p.f.name) + ' <span class="meta">' + esc(normSchool(p.f.school) + ' ' + p.f.age + ' ' + p.f.mbti) + '</span><span class="score">' + p.shown + '</span></div>' +
+    '<div class="why">' + esc(p.why.join(' · ')) + '</div></div><button class="btn b-pink" onclick="useSugg(' + i + ')">슬롯에 넣기</button></div>'
+  ).join('') + (SUGG.length ? '<div class="meta" style="margin-top:4px">짝 없는 소개팅 신청자 ' + left + '명 (성비·조건 때문에 남음)</div>' : '');
+}
+function useSugg(i) {
+  const p = SUGG[i]; if (!p) return;
+  slotA = p.m; slotB = p.f; renderSlots(); renderList(); hideRes();
+  document.getElementById('slotA').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// ============ 슬롯 ============
+function setSlot(w, row) {
+  const a = APPLICANTS.find(x => x.row === row); if (!a) return;
+  if (w === 'a') { if (slotB && slotB.row === row) slotB = null; slotA = a; }
+  else { if (slotA && slotA.row === row) slotA = null; slotB = a; }
+  renderSlots(); renderList(); hideRes();
+}
+function clearSlot(w) { if (w === 'a') slotA = null; else slotB = null; renderSlots(); renderList(); hideRes(); }
+function swap() { [slotA, slotB] = [slotB, slotA]; renderSlots(); renderList(); hideRes(); }
+function clearAll() { slotA = slotB = null; renderSlots(); renderList(); hideRes(); }
+function renderSlots() {
+  [['a', slotA, 'fa', '🌸 A'], ['b', slotB, 'fb', '💙 B']].forEach(([w, s, cls, lb]) => {
+    const el = document.getElementById('slot' + w.toUpperCase());
+    el.classList.remove('fa', 'fb');
+    el.querySelector('.x').hidden = !s;
+    el.querySelector('.lb').textContent = s ? lb + ' — #' + s.row : lb;
+    if (!s) { el.querySelector('.sc').innerHTML = '<span class="meta">왼쪽에서 \'' + w.toUpperCase() + '로\'</span>'; return; }
+    el.classList.add(cls);
+    el.querySelector('.sc').innerHTML = '<div class="nm">' + esc(s.name) + ' <span class="meta">' + esc(s.gender) + '</span></div>' +
+      '<div class="sub">' + esc([s.track && '[' + s.track + ']', s.school, s.major, s.age + '살', s.mbti, evKind(s)].filter(Boolean).join(' · ')) + '</div>' +
+      '<div class="sub">📞 ' + esc(s.phone || '(없음)') + ' · 카톡 ' + esc(s.kakao || '-') + ' · @' + esc(s.instagram || '-') + '</div>' +
+      (s.avoid ? '<div class="avoid">피하고 싶은: ' + esc(s.avoid) + '</div>' : '') +
+      (s.friends ? '<div class="sub" style="color:#1b64b5">👯 ' + esc(s.friends) + '</div>' : '');
+  });
+  document.getElementById('genBtn').disabled = !(slotA && slotB);
+  // 조건 점검
+  const pc = document.getElementById('pairCheck');
+  if (!(slotA && slotB)) { pc.innerHTML = ''; return; }
+  const warns = [];
+  if (slotA.gender && slotA.gender === slotB.gender) warns.push('성별이 같아요');
+  if (evKind(slotA) !== evKind(slotB)) warns.push('신청 유형이 달라요 (' + evKind(slotA) + ' / ' + evKind(slotB) + ')');
+  const h1 = avoidHit(slotA, slotB), h2 = avoidHit(slotB, slotA);
+  if (h1) warns.push(slotA.name + '님 피하고 싶은 조건: ' + h1);
+  if (h2) warns.push(slotB.name + '님 피하고 싶은 조건: ' + h2);
+  if (isMatched(slotA) || isMatched(slotB)) warns.push('이미 매칭완료된 사람이 있어요');
+  pc.innerHTML = warns.length ? '<div class="check bad">⚠️ ' + warns.map(esc).join('<br>⚠️ ') + '</div>' : '<div class="check okc">✓ 조건 충돌 없음 (입금·사진은 오픈채팅에서 확인)</div>';
+}
+
+// ============ 링크 · 문자 ============
+function b64url(obj) {
+  const bytes = new TextEncoder().encode(JSON.stringify(obj)); let bin = '';
+  bytes.forEach(b => bin += String.fromCharCode(b));
+  return btoa(bin).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+function payload(p) {
+  const c = document.getElementById('comment').value.trim();
+  const o = { s: normSchool(p.school) || p.school, a: p.age, i: p.instagram, k: p.kakao, m: p.mbti, b: p.intro, g: p.major ? majorName(p.major) : '', t: p.track && p.track !== '일반학과' ? p.track : '' };
+  if (/^(없음|x|X|-)$/.test(o.i || '')) delete o.i;
+  if (c) o.c = c;
+  Object.keys(o).forEach(k => { if (!o[k]) delete o[k]; });
+  return o;
+}
+function siteBase() {
+  if (location.protocol.startsWith('http')) return new URL('.', location.href).href.replace(/\/+$/, '');
+  return (document.getElementById('baseUrl').value || '').trim().replace(/\/+$/, '');
+}
+try { document.getElementById('adminKey').value = localStorage.getItem('rw_admin_key') || ''; } catch (e) { }
+window.addEventListener('DOMContentLoaded', () => { if (location.protocol.startsWith('http')) document.getElementById('baseUrl').value = siteBase(); });
+function smsText(name, url) {
+  return '[런웨이] ' + name + '님, 매칭 결과가 도착했어요 ✈️\n\n아래 링크에서 상대 프로필과 연락처를 확인하세요:\n' + url +
+    '\n\n먼저 인사 건네보는 것도 좋아요 :)\n\n※ 본 번호는 발송 전용입니다 (응대 불가)\n문의는 런웨이 오픈채팅으로 부탁드려요';
+}
+function hideRes() { document.getElementById('res').classList.add('hidden'); document.getElementById('sendStatus').textContent = ''; }
+function generate() {
+  if (!slotA || !slotB) return;
+  const base = siteBase() + '/match.html?p=';
+  const ua = base + b64url(payload(slotB)), ub = base + b64url(payload(slotA));
+  document.getElementById('urlA').value = ua; document.getElementById('urlB').value = ub;
+  document.getElementById('smsPreview').textContent = '🌸 ' + slotA.name + ' (' + (slotA.phone || '전화없음') + ')\n\n' + smsText(slotA.name, ua) +
+    '\n\n────────────\n\n💙 ' + slotB.name + ' (' + (slotB.phone || '전화없음') + ')\n\n' + smsText(slotB.name, ub);
+  document.getElementById('res').classList.remove('hidden');
+  document.getElementById('sendBtn').disabled = !(slotA.phone && slotB.phone);
+}
+function copyVal(id, btn) {
+  navigator.clipboard.writeText(document.getElementById(id).value).then(() => { const o = btn.textContent; btn.textContent = '✓'; setTimeout(() => btn.textContent = o, 1000); });
+}
+async function sendSms() {
+  if (!slotA || !slotB) return;
+  if (!confirm(slotA.name + ' (' + slotA.phone + ')\n' + slotB.name + ' (' + slotB.phone + ')\n\n두 사람에게 매칭 결과 문자를 보낼까요?')) return;
+  const btn = document.getElementById('sendBtn'), st = document.getElementById('sendStatus');
+  btn.disabled = true; btn.textContent = '⏳ 발송 중…'; st.className = 'status'; st.textContent = '';
+  try {
+    await fetch(document.getElementById('apiUrl').value.trim(), {
+      method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+      body: JSON.stringify({
+        type: 'rwMatch',
+        key: document.getElementById('adminKey').value.trim(),
+        a: { name: slotA.name, phone: slotA.phone, url: document.getElementById('urlA').value, row: slotA.row },
+        b: { name: slotB.name, phone: slotB.phone, url: document.getElementById('urlB').value, row: slotB.row }
+      })
+    });
+    st.className = 'status ok';
+    st.textContent = '✓ 발송 요청 완료 — 실제 결과는 운영 시트 "런웨이_매칭_로그" 탭에서 확인 (실패한 사람은 매칭완료로 안 바뀌어요)';
+    setTimeout(() => { clearAll(); document.getElementById('comment').value = ''; btn.textContent = '📱 양쪽에 문자 발송'; btn.disabled = false; loadApplicants(); }, 3000);
+  } catch (e) {
+    btn.disabled = false; btn.textContent = '📱 양쪽에 문자 발송';
+    st.className = 'status err'; st.textContent = '❌ ' + (e.message || e);
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>런웨이 — 매칭 결과 ✈️</title>
+<meta name="robots" content="noindex,nofollow">
+<meta property="og:title" content="✈️ 런웨이 매칭 결과가 도착했어요">
+<meta property="og:description" content="눌러서 내 매칭 상대를 확인해보세요">
+<meta name="theme-color" content="#14110e">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='82' font-size='82'%3E%E2%9C%88%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Black+Han+Sans&family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--blue:#16130f;--blue2:#c2391a;--sky:#fff1ea;--pink:#ff5a36;--pinks:#fbf3df;--ink:#16130f;--muted:#7a7268;--line:#e9e3d9}
+*{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
+body{font-family:'Noto Sans KR',sans-serif;min-height:100vh;background:linear-gradient(175deg,#14110e 0%,#2a221b 55%,#f7f4ef 55.1%);color:var(--ink);word-break:keep-all;-webkit-font-smoothing:antialiased}
+.wrap{max-width:440px;margin:0 auto;padding:34px 18px 60px}
+.disp{font-family:'Black Han Sans',sans-serif;font-weight:400}
+.eyebrow{color:#e8b64c;letter-spacing:.04em;font-size:12.5px;font-weight:700;text-align:center}
+h1{color:#fff;font-size:30px;text-align:center;margin:6px 0 22px;line-height:1.25}
+.env{background:#fff;border-radius:24px;box-shadow:0 18px 40px rgba(6,30,60,.25);padding:34px 22px;text-align:center;cursor:pointer;user-select:none;transition:transform .15s}
+.env:active{transform:scale(.98)}
+.env .emo{font-size:64px;display:block;animation:bob 1.6s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-6px)}}
+.env p{margin-top:12px;font-weight:700}
+.env small{display:block;color:var(--muted);margin-top:4px;font-size:12.5px}
+.card{display:none;background:#fff;border-radius:24px;box-shadow:0 18px 40px rgba(6,30,60,.25);overflow:hidden;animation:pop .45s cubic-bezier(.2,1.4,.4,1)}
+.card.on{display:block}
+@keyframes pop{from{transform:scale(.9);opacity:0}}
+.card-hd{background:var(--sky);padding:22px 22px 18px;text-align:center}
+.card-hd .who{font-size:26px;color:var(--blue)}
+.card-hd .tags{display:flex;justify-content:center;gap:6px;flex-wrap:wrap;margin-top:10px}
+.card-hd .tags span{background:#fff;color:var(--blue);font-weight:700;font-size:12.5px;border-radius:99px;padding:4px 11px}
+.card-bd{padding:20px 22px 22px}
+.q{font-size:12px;font-weight:900;color:var(--blue2);margin-bottom:4px}
+.intro{font-size:15.5px;line-height:1.6;margin-bottom:16px}
+.note{background:var(--pinks);border-radius:12px;padding:12px 14px;font-size:13.5px;margin-bottom:16px;color:#7c2446}
+.note b{display:block;font-size:12px;margin-bottom:3px}
+.contact{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.contact .ic{font-size:22px}
+.contact .v{flex:1;min-width:0}
+.contact .v small{display:block;font-size:11.5px;color:var(--muted)}
+.contact .v b{font-size:15.5px;overflow-wrap:anywhere}
+.contact button,.contact a{border:0;background:var(--blue);color:#fff;border-radius:9px;padding:8px 12px;font-size:12.5px;font-weight:700;text-decoration:none;font-family:inherit;white-space:nowrap}
+.tips{margin-top:18px;background:#f6f9fd;border-radius:14px;padding:14px 16px;font-size:13px;color:var(--muted);line-height:1.7}
+.tips b{color:var(--ink)}
+.err{display:none;background:#fff;border-radius:20px;padding:30px 22px;text-align:center}
+.err.on{display:block}
+.foot{text-align:center;color:var(--muted);font-size:12px;margin-top:22px}
+.toast{position:fixed;left:50%;bottom:40px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:10px;font-size:13px;opacity:0;transition:.2s;pointer-events:none}
+.toast.on{opacity:1}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p class="eyebrow">RUNWAY 런웨이 · 대학연합 소개팅</p>
+  <h1 class="disp">당신의 매칭 상대가<br>도착했어요 ✈️</h1>
+
+  <div class="env" id="env" onclick="reveal()" role="button" tabindex="0">
+    <span class="emo">🎫</span>
+    <p>눌러서 내 매칭 상대 확인하기</p>
+    <small>운영진이 신청서를 보고 직접 골랐어요</small>
+  </div>
+
+  <div class="card" id="card">
+    <div class="card-hd">
+      <div class="who disp" id="who"></div>
+      <div class="tags" id="tags"></div>
+    </div>
+    <div class="card-bd">
+      <div id="introWrap"><p class="q">한 줄 자기소개</p><p class="intro" id="intro"></p></div>
+      <div class="note" id="noteWrap" hidden><b>💌 운영진 한마디</b><span id="note"></span></div>
+      <div class="contact" id="kakaoRow" hidden>
+        <span class="ic">💬</span>
+        <div class="v"><small>카카오톡 ID</small><b id="kakao"></b></div>
+        <button onclick="copyId('k')">복사</button>
+      </div>
+      <div class="contact" id="instaRow" hidden>
+        <span class="ic">📷</span>
+        <div class="v"><small>인스타그램</small><b id="insta"></b></div>
+        <a id="instaLink" target="_blank" rel="noopener">열기</a>
+      </div>
+      <div class="tips">
+        <b>👋 이렇게 시작해보세요</b><br>
+        카톡 친구추가 후 "런웨이에서 매칭된 ○○이에요!"로 인사하면 끝.<br>
+        상대도 같은 문자를 받았어요. <b>하루 안에</b> 먼저 연락해보는 걸 추천해요.<br>
+        연락이 안 되거나 불편한 일이 있으면 <a class="js-openchat" href="#" target="_blank" rel="noopener" style="color:var(--blue2);font-weight:700">오픈채팅</a>으로 알려주세요.
+      </div>
+    </div>
+  </div>
+
+  <div class="err" id="err">
+    <div style="font-size:44px">✈️</div>
+    <p style="font-weight:900;margin-top:8px">링크가 올바르지 않아요</p>
+    <p style="color:var(--muted);font-size:13px;margin-top:6px">문자로 받은 링크 전체를 다시 눌러주세요.<br>계속 안 되면 런웨이 오픈채팅으로 알려주세요.</p>
+  </div>
+
+  <p class="foot">RUNWAY — 좋은 인연 되길 바라요 ✈️</p>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const OPEN_CHAT_URL = '';   // ⚠️ index.html과 같은 오픈채팅 링크
+document.querySelectorAll('.js-openchat').forEach(a => { if (OPEN_CHAT_URL) a.href = OPEN_CHAT_URL; else a.removeAttribute('href'); });
+function decode(str) {
+  try {
+    let b64 = str.replace(/-/g, '+').replace(/_/g, '/');
+    while (b64.length % 4) b64 += '=';
+    const bytes = Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+    return JSON.parse(new TextDecoder().decode(bytes));
+  } catch (e) { return null; }
+}
+const p = new URLSearchParams(location.search).get('p');
+const d = p ? decode(p) : null;
+const $ = id => document.getElementById(id);
+if (!d || !(d.s || d.a || d.k || d.i)) {
+  $('env').style.display = 'none';
+  $('err').classList.add('on');
+}
+function reveal() {
+  if (!d) return;
+  $('env').style.display = 'none';
+  $('who').textContent = [d.s, d.a ? d.a + '살' : ''].filter(Boolean).join(' · ') || '나의 매칭 상대';
+  $('tags').innerHTML = '';
+  [d.t, d.g, d.m].filter(Boolean).forEach(t => { const s = document.createElement('span'); s.textContent = t; $('tags').appendChild(s); });
+  if (d.b) $('intro').textContent = d.b; else $('introWrap').hidden = true;
+  if (d.c) { $('note').textContent = d.c; $('noteWrap').hidden = false; }
+  if (d.k) { $('kakao').textContent = d.k; $('kakaoRow').hidden = false; }
+  if (d.i) { $('insta').textContent = '@' + d.i; $('instaLink').href = 'https://instagram.com/' + encodeURIComponent(d.i); $('instaRow').hidden = false; }
+  $('card').classList.add('on');
+}
+$('env').addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') reveal(); });
+function copyId(t) {
+  const v = t === 'k' ? d.k : d.i;
+  (navigator.clipboard ? navigator.clipboard.writeText(v) : Promise.reject()).then(() => toast('복사했어요: ' + v)).catch(() => toast(v));
+}
+function toast(m) { const el = $('toast'); el.textContent = m; el.classList.add('on'); setTimeout(() => el.classList.remove('on'), 1800); }
+</script>
+</body>
+</html>
