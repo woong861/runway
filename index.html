@@ -116,6 +116,15 @@ h2{font-size:clamp(27px,6.6vw,38px);line-height:1.25;font-weight:850;letter-spac
 .sec-sub{color:var(--sub);font-size:16px;margin-top:10px}
 .sec-hd{margin-bottom:30px}
 
+/* proof */
+.proof{background:#fff;border-bottom:1px solid var(--line);padding:30px 0 26px}
+.pf-hd{font-size:13px;font-weight:800;color:var(--acc);margin-bottom:12px}
+.pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.pf{background:var(--paper);border:1px solid var(--line);border-radius:16px;padding:14px 10px;text-align:center}
+.pf b{display:block;font-size:clamp(24px,7vw,34px);font-weight:850;letter-spacing:-.04em;line-height:1.1}
+.pf span{display:block;font-size:12px;color:var(--muted);margin-top:4px;font-weight:600}
+.pf-sch{font-size:12.5px;color:var(--sub);margin-top:12px;line-height:1.6}
+
 /* lineup (전공 카드) */
 .lineup{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lu{position:relative;border-radius:var(--r);padding:20px 16px 18px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);overflow:hidden}
@@ -389,6 +398,18 @@ footer b{color:rgba(255,255,255,.85)}
   </div>
 </div>
 
+<section class="proof" id="proof" hidden>
+  <div class="wrap">
+    <p class="pf-hd">지금 런웨이에는</p>
+    <div class="pf-grid">
+      <div class="pf"><b id="pfTotal">-</b><span>명이 신청했어요</span></div>
+      <div class="pf"><b id="pfFemale">-</b><span>여학우 비율</span></div>
+      <div class="pf"><b>20+</b><span>개 학교 참여</span></div>
+    </div>
+    <p class="pf-sch">숙명여대 · 한양여대 · 경희대 · 중앙대 · 한예종 · 이화여대 · 홍익대 · 건국대 · 동덕여대 · 세종대 · 한양대 외</p>
+  </div>
+</section>
+
 <section class="sec">
   <div class="wrap">
     <div class="sec-hd rv">
@@ -466,7 +487,7 @@ footer b{color:rgba(255,255,255,.85)}
     <div class="trust">
       <div class="t rv"><span class="ti">🔒</span><div><b>이름·번호는 비공개</b><span>상대에게는 학교·나이·전공·자기소개와 카톡/인스타 ID만 전달돼요.</span></div></div>
       <div class="t rv"><span class="ti">🙅</span><div><b>노쇼·잠수 제한</b><span>매칭 후 연락 무시나 무례한 행동은 신고 시 다음 회차 참여가 제한돼요.</span></div></div>
-      <div class="t rv"><span class="ti">↺</span><div><b>매칭 실패 시 환불</b><span>원하는 조건의 상대를 못 찾으면 적어주신 계좌로 환불해요.</span></div></div>
+      <div class="t rv"><span class="ti">↺</span><div><b>매칭 실패 시 환불</b><span>맞는 상대를 못 찾으면 환불해드려요. 계좌는 그때 오픈채팅에서 받아요.</span></div></div>
     </div>
   </div>
 </section>
@@ -549,14 +570,14 @@ footer b{color:rgba(255,255,255,.85)}
               <p class="err">학과와 학년을 적어주세요</p>
             </div>
             <div class="field" data-f="avoid">
-              <label class="l" for="avoid">피하고 싶은 학교 / 학과 <i>*</i></label>
-              <input type="text" id="avoid" name="avoid" placeholder="예: 같은 과 X / 없으면 '없음'" maxlength="60">
-              <div class="quick" data-target="avoid"><button type="button">없음</button><button type="button">같은 과 X</button><button type="button">같은 학교 X</button></div>
+              <label class="l" for="avoid">피하고 싶은 학교 / 학과 <small style="color:var(--muted);font-weight:500">(선택)</small></label>
+              <input type="text" id="avoid" name="avoid" placeholder="예: 같은 과 X (없으면 비워두세요)" maxlength="60">
+              <div class="quick" data-target="avoid"><button type="button">같은 과 X</button><button type="button">같은 학교 X</button></div>
               <p class="err">없으면 '없음'이라고 적어주세요</p>
             </div>
             <div class="field" data-f="mbti">
-              <label class="l" for="mbti">MBTI <i>*</i></label>
-              <input type="text" id="mbti" name="mbti" placeholder="예: ENFP (모르면 '모름')" maxlength="10" autocapitalize="characters">
+              <label class="l" for="mbti">MBTI <small style="color:var(--muted);font-weight:500">(선택)</small></label>
+              <input type="text" id="mbti" name="mbti" placeholder="예: ENFP" maxlength="10" autocapitalize="characters">
               <p class="err">MBTI를 적어주세요</p>
             </div>
             <div class="field" data-f="intro">
@@ -592,20 +613,12 @@ footer b{color:rgba(255,255,255,.85)}
             </div>
           </fieldset>
 
-          <fieldset class="fs">
-            <legend><span class="n">4</span>환불 계좌</legend>
-            <div class="pay">
-              <div id="payLabel">참가비 안내</div>
-              <div class="acct" id="acctBox" style="margin-top:8px">참가비와 입금 계좌는 신청 후 <b>오픈채팅에서 안내</b>해드려요. 지금 입금하지 않아도 돼요.</div>
-            </div>
-            <input type="hidden" id="payment" name="payment">
-            <div class="field" data-f="refund">
-              <label class="l" for="refund">환불받을 은행 / 계좌번호 <i>*</i></label>
-              <input type="text" id="refund" name="refund" placeholder="예: 카카오뱅크 3333-00-0000000" maxlength="60">
-              <p class="hint">매칭이 안 되면 여기로 환불해드려요.</p>
-              <p class="err">환불 계좌를 적어주세요</p>
-            </div>
-          </fieldset>
+          <div class="pay">
+            <div id="payLabel">참가비 안내</div>
+            <div class="acct" id="acctBox" style="margin-top:8px">참가비와 입금 계좌는 신청 후 <b>오픈채팅에서 안내</b>해드려요. 지금 입금하지 않아도 돼요.</div>
+          </div>
+          <input type="hidden" id="payment" name="payment">
+          <input type="hidden" id="refund" name="refund" value="필요 시 오픈채팅에서 확인">
 
           <div class="field" data-f="agree">
             <label class="agree"><input type="checkbox" id="agree"><span>매칭을 위해 위 정보를 운영진이 확인하고, <b>매칭된 상대에게 카톡·인스타 ID·학교·나이·전공·MBTI·자기소개가 전달</b>되는 데 동의해요. (이름·연락처·사진은 전달되지 않아요)</span></label>
@@ -644,7 +657,7 @@ footer b{color:rgba(255,255,255,.85)}
     <details class="rv"><summary>미팅은 어떻게 신청해요?</summary><p>2:2 또는 3:3을 고르고, 함께할 친구 정보를 같이 적어주세요. 다른 학교 친구도 괜찮아요. 미팅은 1인 신청이 안 돼요.</p></details>
     <details class="rv"><summary>사진은 상대에게 보내지나요?</summary><p>아니요. 사진은 매칭할 때 운영진만 참고하고 상대에게 전달하지 않아요. 상대에게는 학교·나이·전공·MBTI·자기소개와 카톡/인스타 ID만 보여요.</p></details>
     <details class="rv"><summary>아는 사람이랑 매칭될까 봐 걱정돼요</summary><p>'피하고 싶은 학교/학과'에 적어주시면 그 조건은 매칭에서 빼드려요. 예: 같은 과 X, 같은 학교 X.</p></details>
-    <details class="rv"><summary>매칭이 안 되면요?</summary><p>원하는 조건의 상대를 찾지 못하면 적어주신 환불 계좌로 참가비를 돌려드려요.</p></details>
+    <details class="rv"><summary>매칭이 안 되면요?</summary><p>맞는 상대를 찾지 못하면 참가비를 돌려드려요. 환불 계좌는 그때 오픈채팅에서 받아요.</p></details>
     <details class="rv"><summary>문의는 어디로 해요?</summary><p><a class="js-openchat" href="#" target="_blank" rel="noopener" style="color:var(--acc);font-weight:700">런웨이 오픈채팅</a>으로 편하게 물어봐주세요.</p></details>
   </div>
 </section>
@@ -707,9 +720,29 @@ document.querySelectorAll('.js-openchat').forEach(a => {
   if (!API_URL) return;
   try {
     const s = await (await fetch(API_URL + '?action=rwStats&t=' + Date.now(), { cache: 'no-store' })).json();
-    if (s && s.total >= SHOW_COUNT_FROM) { const el = $('#liveCount'); el.textContent = '👀 ' + s.total + '명 신청'; el.hidden = false; }
+    if (s && s.total >= SHOW_COUNT_FROM) {
+      const el = $('#liveCount'); el.textContent = '👀 ' + s.total + '명 신청'; el.hidden = false;
+      $('#pfTotal').textContent = s.total;
+      $('#pfFemale').textContent = Math.round(s.female / Math.max(1, s.male + s.female) * 100) + '%';
+      $('#proof').hidden = false;
+    }
   } catch (e) { }
 })();
+
+// 방문 → 작성 시작 → 제출 측정 (개인정보 없이 숫자만)
+function hit(ev) {
+  if (!API_URL) return;
+  try {
+    const k = 'rw_hit_' + ev + '_' + new Date().toISOString().slice(0, 10);
+    if (ev !== 'submit' && sessionStorage.getItem(k)) return;
+    sessionStorage.setItem(k, '1');
+  } catch (e) { }
+  try { fetch(API_URL + '?action=rwHit&e=' + ev + '&src=' + encodeURIComponent((new URLSearchParams(location.search).get('src') || document.referrer.split('/')[2] || 'direct').slice(0, 40)), { mode: 'no-cors', keepalive: true }); } catch (e) { }
+}
+hit('view');
+form.addEventListener('focusin', () => hit('start'), { once: true });
+form.addEventListener('input', () => hit('start'), { once: true });
+form.addEventListener('change', () => hit('start'), { once: true });
 
 document.querySelectorAll('.quick').forEach(q => q.addEventListener('click', e => {
   if (e.target.tagName !== 'BUTTON') return;
@@ -732,21 +765,13 @@ function priceOf(ev, g) {
 }
 function updatePay() {
   // 사이트에는 금액을 보여주지 않음 — 시트 '입금정보' 칸에만 금액 기록 (운영진 확인용)
-  const ev = val('event_type'), g = val('gender'), refund = $('#refund');
+  const ev = val('event_type'), g = val('gender');
   $('#meetHint').hidden = !ev.startsWith('미팅');
   const p = priceOf(ev, g);
   if (p === null) return;
   const isMeet = ev.startsWith('미팅');
-  if (p === 0) {
-    $('[data-f="refund"]').style.display = 'none';
-    if (!refund.value || refund.dataset.auto) { refund.value = '없음 (무료)'; refund.dataset.auto = '1'; }
-  } else {
-    $('[data-f="refund"]').style.display = '';
-    if (refund.dataset.auto) { refund.value = ''; delete refund.dataset.auto; }
-  }
   $('#payment').value = p === 0 ? '무료 (여학우 소개팅)' : '입금 전 · 계좌 추후 안내 · ' + won(p) + '원' + (isMeet ? '/1인' : '');
 }
-$('#refund').addEventListener('input', e => { delete e.target.dataset.auto; });
 
 function toast(msg) {
   const el = $('#toast'); el.textContent = msg; el.classList.add('on');
@@ -834,7 +859,7 @@ form.addEventListener('change', e => {
 
 // 인스타는 필수 — '없음' 같은 값은 안 받음
 const NO_IG = /^@?\s*(없음|없어요|없습니다|x|X|-|no|none|ㄴ|ㄴㄴ)\s*$/i;
-const REQUIRED = ['event_type', 'gender', 'name', 'age', 'track', 'school', 'major', 'avoid', 'mbti', 'ideal', 'phone', 'kakao', 'instagram', 'refund'];
+const REQUIRED = ['event_type', 'gender', 'name', 'age', 'track', 'school', 'major', 'ideal', 'phone', 'kakao', 'instagram'];
 function validate() {
   let first = null;
   const bad = k => { const f = form.querySelector('[data-f="' + k + '"]'); if (f) { f.classList.add('bad'); first = first || f; } };
@@ -862,11 +887,13 @@ form.addEventListener('submit', async e => {
     let v = val(k);
     if (k === 'phone') v = v.replace(/[^0-9]/g, '');
     if (k === 'instagram') v = v.replace(/^@/, '');
+    if (k === 'avoid' && !v) v = '없음';
     data[k] = v;
   });
   try {
     // no-cors: 응답은 못 읽지만 Apps Script까지는 전달됨 (실패 시 네트워크 오류로 catch)
     await fetch(API_URL, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(data) });
+    hit('submit');
     showDone(data.gender, data.event_type, data.phone);
     try { localStorage.removeItem(DRAFT_KEY); } catch (e2) { }
   } catch (err) {
